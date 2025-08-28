@@ -4,7 +4,7 @@ import Foundation
 public struct Injected<T> {
     private let container: Container
 
-    public init(container: Container = DefaultContainer.shared) {
+    public init(container: Container = SafeContainer.shared) {
         self.container = container
     }
 
@@ -18,7 +18,7 @@ public struct LazyInjected<T> {
     private let container: Container
     private var _value: T?
 
-    public init(container: Container = DefaultContainer.shared) {
+    public init(container: Container = SafeContainer.shared) {
         self.container = container
     }
 
@@ -60,7 +60,7 @@ public struct UseCaseInjected<T> where T: UseCase {
 public struct CoordinatorInjected<T> where T: Coordinator {
     private let container: Container
 
-    public init(container: Container = DefaultContainer.shared) {
+    public init(container: Container = SafeContainer.shared) {
         self.container = container
     }
 

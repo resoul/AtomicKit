@@ -7,7 +7,7 @@ public protocol ViewModelFactory {
 public final class DefaultViewModelFactory: ViewModelFactory {
     private let container: Container
 
-    public init(container: Container = DefaultContainer.shared) {
+    public init(container: Container = SafeContainer.shared) {
         self.container = container
     }
 
@@ -23,7 +23,7 @@ public protocol UseCaseFactory {
 public final class DefaultUseCaseFactory: UseCaseFactory {
     private let container: Container
 
-    public init(container: Container = DefaultContainer.shared) {
+    public init(container: Container = SafeContainer.shared) {
         self.container = container
     }
 

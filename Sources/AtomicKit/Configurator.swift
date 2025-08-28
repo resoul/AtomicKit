@@ -1,5 +1,19 @@
 import Foundation
 
+public protocol Injectable {
+    static func create(container: Container) -> Self
+}
+
+public protocol AutoInjectable: Injectable {
+    init()
+}
+
+extension AutoInjectable {
+    public static func inject(container: Container) -> Self {
+        return Self()
+    }
+}
+
 public protocol Module {
     func configure(container: Container)
 }
@@ -17,7 +31,7 @@ public final class Configurator {
         domains: [DomainModule] = [],
         presentation: [PresentationModule] = [],
         coordinators: [CoordinatorModule] = [],
-        container: Container = DefaultContainer.shared
+        container: Container = SafeContainer.shared
     ) {
         // Sorting: Services → Data → Domain → Presentation → Coordinators
         services.forEach { $0.configure(container: container) }

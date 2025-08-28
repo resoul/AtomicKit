@@ -33,7 +33,7 @@ protocol AppCoordinator: Coordinator {
     func showAuthFlow()
 }
 
-class AppCoordinatorImpl: BaseCoordinatorImpl, AppCoordinator {
+class AppCoordinatorImpl: CoordinatorImpl, AppCoordinator {
     @Injected private var coordinatorFactory: CoordinatorFactory
 
     override func start() {
@@ -112,6 +112,4 @@ AtomicKit helps you quickly build **clean, modular, and scalable architecture** 
 
 ## TODO
 
-- rebuild structure
-- rename some classes
 - add tests
