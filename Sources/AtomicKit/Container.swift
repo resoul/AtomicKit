@@ -1,29 +1,33 @@
 import Foundation
 
-public protocol DIContainer {
-    func register<T>(_ type: T.Type, scope: DIScope, factory: @escaping (DIContainer) -> T)
+public protocol Container {
+    func register<T>(_ type: T.Type, scope: DIScope, factory: @escaping (Container) -> T)
     func resolve<T>(_ type: T.Type) -> T
     func resolve<T>(_ type: T.Type) -> T?
-    func createScope() -> DIContainer
+    func createScope() -> Container
     func dispose()
 }
 
-public final class DefaultDIContainer: DIContainer {
-    public static let shared = DefaultDIContainer()
+public final class DefaultContainer: Container {
+    public static let shared = DefaultContainer()
 
-    private var factories: [String: (DIContainer) -> Any] = [:]
+    private var factories: [String: (Container) -> Any] = [:]
     private var scopes: [String: DIScope] = [:]
     private var singletons: [String: Any] = [:]
     private var scopedInstances: [String: Any] = [:]
 
-    private let parent: DIContainer?
-    private var children: [DefaultDIContainer] = []
+    private let parent: Container?
+    private var children: [DefaultContainer] = []
 
-    private init(parent: DIContainer? = nil) {
+    private init(parent: Container? = nil) {
         self.parent = parent
     }
 
-    public func register<T>(_ type: T.Type, scope: DIScope = .transient, factory: @escaping (DIContainer) -> T) {
+    public func register<T>(
+        _ type: T.Type,
+        scope: DIScope = .transient,
+        factory: @escaping (Container) -> T
+    ) {
         let key = String(describing: type)
         factories[key] = factory
         scopes[key] = scope
@@ -70,8 +74,8 @@ public final class DefaultDIContainer: DIContainer {
         return factory(self) as? T
     }
 
-    public func createScope() -> DIContainer {
-        let child = DefaultDIContainer(parent: self)
+    public func createScope() -> Container {
+        let child = DefaultContainer(parent: self)
         children.append(child)
         return child
     }

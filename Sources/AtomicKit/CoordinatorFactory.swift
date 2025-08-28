@@ -6,13 +6,16 @@ public protocol CoordinatorFactory {
 }
 
 public final class DefaultCoordinatorFactory: CoordinatorFactory {
-    private let container: DIContainer
+    private let container: Container
 
-    public init(container: DIContainer = DefaultDIContainer.shared) {
+    public init(container: Container = DefaultContainer.shared) {
         self.container = container
     }
 
-    public func createCoordinator<T: Coordinator>(_ type: T.Type, navigationController: UINavigationController) -> T {
+    public func createCoordinator<T: Coordinator>(
+        _ type: T.Type,
+        navigationController: UINavigationController
+    ) -> T {
         // Create scoped container
         let scopedContainer = container.createScope()
 

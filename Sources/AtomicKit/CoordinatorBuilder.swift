@@ -1,9 +1,9 @@
 import UIKit
 
 public final class CoordinatorBuilder {
-    private let container: DIContainer
+    private let container: Container
 
-    public init(container: DIContainer = DefaultDIContainer.shared) {
+    public init(container: Container = DefaultContainer.shared) {
         self.container = container
     }
 
@@ -13,12 +13,12 @@ public final class CoordinatorBuilder {
 }
 
 public final class CoordinatorConfiguration<T: Coordinator> {
-    private let container: DIContainer
+    private let container: Container
     private let coordinatorType: T.Type
     private var navigationController: UINavigationController?
     private var parentCoordinator: ParentCoordinator?
 
-    internal init(container: DIContainer, coordinatorType: T.Type) {
+    internal init(container: Container, coordinatorType: T.Type) {
         self.container = container
         self.coordinatorType = coordinatorType
     }

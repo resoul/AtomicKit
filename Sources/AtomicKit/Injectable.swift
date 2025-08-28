@@ -1,7 +1,7 @@
 import Foundation
 
 public protocol Injectable {
-    static func inject(container: DIContainer) -> Self
+    static func create(container: Container) -> Self
 }
 
 public protocol AutoInjectable: Injectable {
@@ -9,7 +9,7 @@ public protocol AutoInjectable: Injectable {
 }
 
 extension AutoInjectable {
-    public static func inject(container: DIContainer) -> Self {
+    public static func inject(container: Container) -> Self {
         return Self()
     }
 }

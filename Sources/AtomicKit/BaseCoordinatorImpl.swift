@@ -3,10 +3,10 @@ import UIKit
 open class BaseCoordinatorImpl: NSObject, NavigationCoordinator, ParentCoordinator {
     public var childCoordinators: [Coordinator] = []
     public let navigationController: UINavigationController
-    public let container: DIContainer
+    public let container: Container
     public weak var parentCoordinator: ParentCoordinator?
 
-    public init(navigationController: UINavigationController, container: DIContainer) {
+    public init(navigationController: UINavigationController, container: Container) {
         self.navigationController = navigationController
         self.container = container
         super.init()
