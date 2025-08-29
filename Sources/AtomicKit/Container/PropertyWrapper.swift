@@ -80,3 +80,14 @@ public struct WeakCoordinator<T> where T: AnyObject {
 
     public init() {}
 }
+
+@propertyWrapper
+public struct LoggerInjected {
+    @Injected private var logger: Logger
+
+    public var wrappedValue: Logger {
+        return logger
+    }
+
+    public init() {}
+}

@@ -30,17 +30,29 @@ open class CoordinatorImpl: NSObject, NavigationCoordinator, ParentCoordinator {
     public let container: Container
     public weak var parentCoordinator: ParentCoordinator?
 
+    private static var logger: Logger?
+
     public init(navigationController: UINavigationController, container: Container) {
         self.navigationController = navigationController
         self.container = container
         super.init()
     }
 
+    public static func setLogger(_ logger: Logger) {
+        self.logger = logger
+    }
+
     open func start() {
-        fatalError("Start method must be implemented")
+        logCoordinatorOperation("Starting coordinator: \(type(of: self))", metadata: [
+            "coordinator": String(describing: type(of: self))
+        ])
     }
 
     public func coordinate(to coordinator: Coordinator) {
+        logCoordinatorOperation("Coordinating to: \(type(of: coordinator))", metadata: [
+            "from": String(describing: type(of: self)),
+            "to": String(describing: type(of: coordinator))
+        ])
         childCoordinators.append(coordinator)
         if let baseCoordinator = coordinator as? CoordinatorImpl {
             baseCoordinator.parentCoordinator = self
@@ -49,6 +61,10 @@ open class CoordinatorImpl: NSObject, NavigationCoordinator, ParentCoordinator {
     }
 
     public func removeChild(_ coordinator: Coordinator) {
+        logCoordinatorOperation("Removing child coordinator: \(type(of: coordinator))", metadata: [
+            "parent": String(describing: type(of: self)),
+            "child": String(describing: type(of: coordinator))
+        ])
         childCoordinators = childCoordinators.filter { $0 !== coordinator }
     }
 
@@ -58,10 +74,19 @@ open class CoordinatorImpl: NSObject, NavigationCoordinator, ParentCoordinator {
 
     // MARK: - Navigation Methods
     public func push(_ viewController: UIViewController, animated: Bool = true) {
+        logCoordinatorOperation("Pushing view controller: \(type(of: viewController))", metadata: [
+            "coordinator": String(describing: type(of: self)),
+            "viewController": String(describing: type(of: viewController)),
+            "animated": animated
+        ])
         navigationController.pushViewController(viewController, animated: animated)
     }
 
     public func pop(animated: Bool = true) {
+        logCoordinatorOperation("Popping view controller", metadata: [
+            "coordinator": String(describing: type(of: self)),
+            "animated": animated
+        ])
         navigationController.popViewController(animated: animated)
     }
 
@@ -70,11 +95,24 @@ open class CoordinatorImpl: NSObject, NavigationCoordinator, ParentCoordinator {
     }
 
     public func present(_ viewController: UIViewController, animated: Bool = true) {
+        logCoordinatorOperation("Presenting view controller: \(type(of: viewController))", metadata: [
+            "coordinator": String(describing: type(of: self)),
+            "viewController": String(describing: type(of: viewController)),
+            "animated": animated
+        ])
         navigationController.present(viewController, animated: animated)
     }
 
     public func dismiss(animated: Bool = true) {
+        logCoordinatorOperation("Dismissing view controller", metadata: [
+            "coordinator": String(describing: type(of: self)),
+            "animated": animated
+        ])
         navigationController.dismiss(animated: animated)
+    }
+
+    private func logCoordinatorOperation(_ message: String, level: LogLevel = .debug, metadata: [String: Any] = [:]) {
+        Self.logger?.log(level: level, message: message, metadata: metadata)
     }
 }
 

@@ -2,8 +2,6 @@ import Foundation
 
 public protocol UseCase {}
 public protocol Repository {}
-public protocol DataSource {}
-public protocol Service {}
 public protocol ViewModel: AnyObject {}
 
 public protocol Disposable {
@@ -150,5 +148,69 @@ public final class SafeContainer: Container {
         // Dispose children
         children.forEach { $0.dispose() }
         children.removeAll()
+    }
+}
+
+extension SafeContainer {
+    private static var logger: Logger?
+
+    public static func setLogger(_ logger: Logger) {
+        self.logger = logger
+    }
+
+    private func logContainerOperation(_ message: String, level: LogLevel = .debug, metadata: [String: Any] = [:]) {
+        Self.logger?.log(level: level, message: message, metadata: metadata)
+    }
+
+    // Override register method to add logging
+    public func registerWithLogging<T>(_ type: T.Type, scope: ContainerScope = .transient, factory: @escaping (Container) -> T) {
+        logContainerOperation("Registering type: \(type), scope: \(scope)", metadata: [
+            "type": String(describing: type),
+            "scope": String(describing: scope)
+        ])
+        register(type, scope: scope, factory: factory)
+    }
+
+    // Override resolve method to add logging
+    public func resolveWithLogging<T>(_ type: T.Type) -> T {
+        let startTime = CFAbsoluteTimeGetCurrent()
+
+        logContainerOperation("Resolving type: \(type)", metadata: [
+            "type": String(describing: type)
+        ])
+
+        let result: T = resolve(type)
+
+        let duration = CFAbsoluteTimeGetCurrent() - startTime
+        logContainerOperation("Resolved type: \(type) in \(String(format: "%.3f", duration * 1000))ms", metadata: [
+            "type": String(describing: type),
+            "duration_ms": duration * 1000
+        ])
+
+        return result
+    }
+
+    public func resolveSafeWithLogging<T>(_ type: T.Type) -> T? {
+        let startTime = CFAbsoluteTimeGetCurrent()
+
+        logContainerOperation("Resolving (safe) type: \(type)", metadata: [
+            "type": String(describing: type)
+        ])
+
+        let result: T? = resolve(type)
+
+        let duration = CFAbsoluteTimeGetCurrent() - startTime
+        if result != nil {
+            logContainerOperation("Resolved (safe) type: \(type) in \(String(format: "%.3f", duration * 1000))ms", metadata: [
+                "type": String(describing: type),
+                "duration_ms": duration * 1000
+            ])
+        } else {
+            logContainerOperation("Failed to resolve (safe) type: \(type)", level: .warning, metadata: [
+                "type": String(describing: type)
+            ])
+        }
+
+        return result
     }
 }
