@@ -1,5 +1,4 @@
 import Foundation
-import os.log
 
 public final class ConsoleLogger: LoggerImpl {
     public convenience init(

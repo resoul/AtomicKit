@@ -196,10 +196,10 @@ final class CoreDataStorage: CoreDataStorageService, MigratableStorage {
 
     // MARK: - MigratableStorage
 
-    func migrate(from version: Int, to version: Int) async throws {
+//    func migrate(from version: Int, to version: Int) async throws {
         // Core Data handles migrations automatically with shouldMigrateStoreAutomatically
         // Custom migration logic can be added here if needed
-    }
+//    }
 
     func currentVersion() -> Int {
         // Return current model version

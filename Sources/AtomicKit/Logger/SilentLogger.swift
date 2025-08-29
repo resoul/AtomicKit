@@ -1,5 +1,4 @@
 import Foundation
-import os.log
 
 public final class SilentLogger: Logger {
     public var minimumLevel: LogLevel = .critical

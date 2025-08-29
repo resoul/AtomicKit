@@ -41,6 +41,7 @@ public struct NetworkRequest {
     public let timeout: TimeInterval
     public let retryCount: Int
     public let cachePolicy: URLRequest.CachePolicy
+    public var metadata: [String: Any]
 
     public init(
         url: URL,
@@ -50,7 +51,8 @@ public struct NetworkRequest {
         encoding: RequestEncoding = .json,
         timeout: TimeInterval = 30.0,
         retryCount: Int = 0,
-        cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy
+        cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
+        metadata: [String: Any] = [:]
     ) {
         self.url = url
         self.method = method
@@ -60,6 +62,7 @@ public struct NetworkRequest {
         self.timeout = timeout
         self.retryCount = retryCount
         self.cachePolicy = cachePolicy
+        self.metadata = metadata
     }
 }
 
@@ -161,6 +164,7 @@ public class URLRequestBuilder: RequestBuilder {
     private var timeout: TimeInterval = 30.0
     private var retryCount: Int = 0
     private var cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy
+    private var metadata: [String: Any] = [:]
 
     public init(baseURL: URL) {
         self.baseURL = baseURL
@@ -247,6 +251,18 @@ public class URLRequestBuilder: RequestBuilder {
         return self
     }
 
+    @discardableResult
+    public func metadata(_ key: String, _ value: Any) -> URLRequestBuilder {
+        self.metadata[key] = value
+        return self
+    }
+
+    @discardableResult
+    public func metadata(_ metadata: [String: Any]) -> URLRequestBuilder {
+        self.metadata.merge(metadata) { _, new in new }
+        return self
+    }
+
     public func build() -> NetworkRequest {
         var url = baseURL.appendingPathComponent(path)
 
@@ -273,7 +289,8 @@ public class URLRequestBuilder: RequestBuilder {
             encoding: encoding,
             timeout: timeout,
             retryCount: retryCount,
-            cachePolicy: cachePolicy
+            cachePolicy: cachePolicy,
+            metadata: metadata
         )
     }
 }

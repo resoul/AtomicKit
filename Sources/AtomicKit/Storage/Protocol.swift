@@ -9,7 +9,7 @@ protocol StorageService {
 }
 
 protocol MigratableStorage {
-    func migrate(from version: Int, to version: Int) async throws
+//    func migrate(from version: Int, to version: Int) async throws
     func currentVersion() -> Int
 }
 

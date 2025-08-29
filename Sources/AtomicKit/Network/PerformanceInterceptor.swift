@@ -5,8 +5,9 @@ public final class PerformanceInterceptor: RequestInterceptor, ResponseIntercept
      private let performanceLogger = CategorizedLogger(category: "Performance")
 
      public func intercept(_ request: NetworkRequest) -> AnyPublisher<NetworkRequest, NetworkError> {
-         request.metadata["startTime"] = CFAbsoluteTimeGetCurrent()
-         return Just(request)
+         var modifiedRequest = request
+         modifiedRequest.metadata["startTime"] = CFAbsoluteTimeGetCurrent()
+         return Just(modifiedRequest)
              .setFailureType(to: NetworkError.self)
              .eraseToAnyPublisher()
      }

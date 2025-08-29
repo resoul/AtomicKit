@@ -1,5 +1,4 @@
 import Foundation
-import os.log
 
 public class FileDestination: LogDestination {
     private let fileURL: URL

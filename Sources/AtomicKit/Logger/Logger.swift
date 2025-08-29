@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol Logger {
+public protocol Logger: AnyObject {
     var minimumLevel: LogLevel { get set }
     var category: String? { get set }
 
