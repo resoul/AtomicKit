@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 
-// MARK: - Request Types
 public enum HTTPMethod: String, CaseIterable {
     case GET = "GET"
     case POST = "POST"
@@ -405,4 +404,54 @@ extension CharacterSet {
         allowed.remove(charactersIn: "\(generalDelimitersToEncode)\(subDelimitersToEncode)")
         return allowed
     }()
+}
+
+extension HTTPClient {
+    public func execute(_ request: NetworkRequest) async throws -> NetworkResponse {
+        return try await execute(request).async()
+    }
+
+    public func execute<T: Decodable>(_ request: NetworkRequest, responseType: T.Type) async throws -> T {
+        return try await execute(request, responseType: responseType).async()
+    }
+}
+
+extension Publisher {
+    public func async() async throws -> Output {
+        return try await withCheckedThrowingContinuation { continuation in
+            var cancellable: AnyCancellable?
+            cancellable = first()
+                .sink(
+                    receiveCompletion: { completion in
+                        switch completion {
+                        case .finished:
+                            break
+                        case .failure(let error):
+                            continuation.resume(throwing: error)
+                        }
+                        cancellable?.cancel()
+                    },
+                    receiveValue: { value in
+                        continuation.resume(returning: value)
+                        cancellable?.cancel()
+                    }
+                )
+        }
+    }
+}
+
+public struct GraphQLRequest {
+    public let query: String
+    public let variables: [String: Any]?
+    public let operationName: String?
+
+    public init(query: String, variables: [String: Any]? = nil, operationName: String? = nil) {
+        self.query = query
+        self.variables = variables
+        self.operationName = operationName
+    }
+}
+
+public protocol GraphQLClient {
+    func execute<T: Decodable>(_ request: GraphQLRequest, responseType: T.Type) -> AnyPublisher<T, NetworkError>
 }

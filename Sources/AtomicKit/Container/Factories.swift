@@ -31,3 +31,19 @@ public final class DefaultUseCaseFactory: UseCaseFactory {
         return container.resolve(type)
     }
 }
+
+public protocol ViewControllerFactory {
+    func createViewController<T: UIViewController>(_ type: T.Type) -> T
+}
+
+public final class DefaultViewControllerFactory: ViewControllerFactory {
+    private let container: Container
+
+    public init(container: Container = SafeContainer.shared) {
+        self.container = container
+    }
+
+    public func createViewController<T: UIViewController>(_ type: T.Type) -> T {
+        return container.resolve(type)
+    }
+}
