@@ -5,10 +5,6 @@ public final class CachingInterceptor: RequestInterceptor, ResponseInterceptor {
     private let cache = URLCache.shared
     private let logger = CategorizedLogger(category: "NetworkCache")
 
-    public init(cache: URLCache = .shared) {
-        self.cache = cache
-    }
-
     public func intercept(_ request: NetworkRequest) -> AnyPublisher<NetworkRequest, NetworkError> {
         // Check cache for GET requests
         if request.method == .GET {

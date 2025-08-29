@@ -35,7 +35,7 @@ public final class LoggingInterceptor: RequestInterceptor, ResponseInterceptor {
             }
         }
 
-        logger.log(level: logLevel, message: "→ Outgoing Request", metadata: metadata)
+        logMessage(level: logLevel, message: "→ Outgoing Request", metadata: metadata)
 
         return Just(request)
             .setFailureType(to: NetworkError.self)
@@ -60,10 +60,27 @@ public final class LoggingInterceptor: RequestInterceptor, ResponseInterceptor {
         }
 
         let level: LogLevel = response.isSuccess ? logLevel : .error
-        logger.log(level: level, message: "← Incoming Response", metadata: metadata)
+        logMessage(level: level, message: "← Incoming Response", metadata: metadata)
 
         return Just(response)
             .setFailureType(to: NetworkError.self)
             .eraseToAnyPublisher()
+    }
+
+    private func logMessage(level: LogLevel, message: String, metadata: [String: Any] = [:]) {
+        switch level {
+        case .verbose:
+            logger.verbose(message, metadata: metadata)
+        case .debug:
+            logger.debug(message, metadata: metadata)
+        case .info:
+            logger.info(message, metadata: metadata)
+        case .warning:
+            logger.warning(message, metadata: metadata)
+        case .error:
+            logger.error(message, metadata: metadata)
+        case .critical:
+            logger.critical(message, metadata: metadata)
+        }
     }
 }

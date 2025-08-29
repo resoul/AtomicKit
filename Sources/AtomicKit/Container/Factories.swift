@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 public protocol ViewModelFactory {
     func createViewModel<T: ViewModel>(_ type: T.Type) -> T

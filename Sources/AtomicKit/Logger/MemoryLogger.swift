@@ -1,5 +1,4 @@
 import Foundation
-import os.log
 
 // MARK: - Memory Logger (for tests/debugging)
 public final class MemoryLogger: Logger {

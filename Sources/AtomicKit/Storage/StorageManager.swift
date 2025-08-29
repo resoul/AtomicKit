@@ -60,3 +60,31 @@ final class StorageManager {
         return BaseRepository<T>(coreDataStorage: coreDataStorage)
     }
 }
+
+private final class CoreDataStorageAdapter: StorageService {
+    private let coreDataStorage: CoreDataStorage
+
+    init(coreDataStorage: CoreDataStorage) {
+        self.coreDataStorage = coreDataStorage
+    }
+
+    func get<T: Codable>(_ key: String, type: T.Type) async throws -> T? {
+        throw StorageError.invalidData("CoreData storage doesn't support key-value operations. Use repository pattern instead.")
+    }
+
+    func set<T: Codable>(_ value: T, for key: String) async throws {
+        throw StorageError.invalidData("CoreData storage doesn't support key-value operations. Use repository pattern instead.")
+    }
+
+    func remove(_ key: String) async throws {
+        throw StorageError.invalidData("CoreData storage doesn't support key-value operations. Use repository pattern instead.")
+    }
+
+    func exists(_ key: String) async -> Bool {
+        return false
+    }
+
+    func clear() async throws {
+        throw StorageError.invalidData("CoreData storage doesn't support clear operation. Use repository methods instead.")
+    }
+}

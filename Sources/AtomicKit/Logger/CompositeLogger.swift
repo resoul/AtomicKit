@@ -1,16 +1,19 @@
 import Foundation
-import os.log
 
 public final class CompositeLogger: Logger {
     public var minimumLevel: LogLevel {
         didSet {
-            loggers.forEach { $0.minimumLevel = minimumLevel }
+            for logger in loggers {
+                logger.minimumLevel = minimumLevel
+            }
         }
     }
 
     public var category: String? {
         didSet {
-            loggers.forEach { $0.category = category }
+            for logger in loggers {
+                logger.category = category
+            }
         }
     }
 
@@ -22,14 +25,16 @@ public final class CompositeLogger: Logger {
         self.category = category
 
         // Sync initial values
-        self.loggers.forEach { logger in
+        for logger in self.loggers {
             logger.minimumLevel = minimumLevel
             logger.category = category
         }
     }
 
     public func log(_ entry: LogEntry) {
-        loggers.forEach { $0.log(entry) }
+        for logger in loggers {
+            logger.log(entry)
+        }
     }
 
     public func addLogger(_ logger: Logger) {

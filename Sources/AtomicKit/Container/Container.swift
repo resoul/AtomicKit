@@ -1,5 +1,6 @@
 import Foundation
 
+public protocol Service {}
 public protocol UseCase {}
 public protocol Repository {}
 public protocol ViewModel: AnyObject {}

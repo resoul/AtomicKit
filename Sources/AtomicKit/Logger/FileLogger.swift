@@ -1,8 +1,22 @@
 import Foundation
-import os.log
 
 public final class FileLogger: LoggerImpl {
     private let fileDestination: FileDestination
+
+    public init(
+        minimumLevel: LogLevel = .info,
+        category: String? = nil,
+        formatter: LogFormatter = LogFormatterImpl(),
+        fileDestination: FileDestination
+    ) {
+        self.fileDestination = fileDestination
+        super.init(
+            minimumLevel: minimumLevel,
+            category: category,
+            formatter: formatter,
+            destination: fileDestination
+        )
+    }
 
     public convenience init(
         minimumLevel: LogLevel = .info,
@@ -18,13 +32,11 @@ public final class FileLogger: LoggerImpl {
             maxBackupCount: maxBackupCount
         )
 
-        self.fileDestination = destination
-
         self.init(
             minimumLevel: minimumLevel,
             category: category,
             formatter: formatter,
-            destination: destination
+            fileDestination: destination
         )
     }
 

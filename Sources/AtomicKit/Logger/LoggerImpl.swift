@@ -1,5 +1,4 @@
 import Foundation
-import os.log
 
 open class LoggerImpl: Logger {
     public var minimumLevel: LogLevel
