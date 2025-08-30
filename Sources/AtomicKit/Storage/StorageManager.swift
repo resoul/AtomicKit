@@ -20,7 +20,7 @@ public final class StorageManager {
         self.migrationManager = StorageMigrationManager(migrations: [:])
     }
 
-    public func storage(for type: StorageType) -> StorageService {
+    func storage(for type: StorageType) -> StorageService {
         switch type {
         case .userDefaults:
             return userDefaultsStorage
@@ -39,12 +39,12 @@ public final class StorageManager {
     }
 
     // Convenience methods
-    public func getUserDefaults() -> UserDefaultsStorage { userDefaultsStorage }
-    public func getKeychain() -> KeychainStorage { keychainStorage }
-    public func getFileSystem() -> FileSystemStorage { fileSystemStorage }
-    public func getCoreData() -> CoreDataStorage? { coreDataStorage }
+    func getUserDefaults() -> UserDefaultsStorage { userDefaultsStorage }
+    func getKeychain() -> KeychainStorage { keychainStorage }
+    func getFileSystem() -> FileSystemStorage { fileSystemStorage }
+    func getCoreData() -> CoreDataStorage? { coreDataStorage }
 
-    public func repository<T: NSManagedObject>(for entityType: T.Type) -> BaseRepository<T>? {
+    func repository<T: NSManagedObject>(for entityType: T.Type) -> BaseRepository<T>? {
         guard let coreDataStorage = coreDataStorage else { return nil }
         return BaseRepository<T>(coreDataStorage: coreDataStorage)
     }
