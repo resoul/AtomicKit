@@ -2,7 +2,7 @@ import Foundation
 import Security
 import CoreData
 
-final class StorageManager {
+public final class StorageManager {
     private let userDefaultsStorage: UserDefaultsStorage
     private let keychainStorage: KeychainStorage
     private let fileSystemStorage: FileSystemStorage
