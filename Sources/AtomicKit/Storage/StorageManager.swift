@@ -9,7 +9,7 @@ public final class StorageManager {
     private let coreDataStorage: CoreDataStorage?
     private let migrationManager: StorageMigrationManager
 
-    init(
+    public init(
         userDefaults: UserDefaults = .standard,
         keychainService: String = Bundle.main.bundleIdentifier ?? "DefaultService",
         keychainAccessGroup: String? = nil,
