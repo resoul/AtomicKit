@@ -2,17 +2,17 @@ import Foundation
 import Security
 import CoreData
 
-final class KeychainStorage: StorageService {
+public final class KeychainStorage: StorageService {
     private let service: String
     private let accessGroup: String?
     private let queue = DispatchQueue(label: "keychain-storage")
 
-    init(service: String, accessGroup: String? = nil) {
+    public init(service: String, accessGroup: String? = nil) {
         self.service = service
         self.accessGroup = accessGroup
     }
 
-    func get<T: Codable>(_ key: String, type: T.Type) async throws -> T? {
+    public func get<T: Codable>(_ key: String, type: T.Type) async throws -> T? {
         return try await withCheckedThrowingContinuation { continuation in
             queue.async {
                 var query = self.baseQuery(for: key)
@@ -47,7 +47,7 @@ final class KeychainStorage: StorageService {
         }
     }
 
-    func set<T: Codable>(_ value: T, for key: String) async throws {
+    public func set<T: Codable>(_ value: T, for key: String) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             queue.async {
                 do {
@@ -86,7 +86,7 @@ final class KeychainStorage: StorageService {
         }
     }
 
-    func remove(_ key: String) async throws {
+    public func remove(_ key: String) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             queue.async {
                 let query = self.baseQuery(for: key)
@@ -101,7 +101,7 @@ final class KeychainStorage: StorageService {
         }
     }
 
-    func exists(_ key: String) async -> Bool {
+    public func exists(_ key: String) async -> Bool {
         return await withCheckedContinuation { continuation in
             queue.async {
                 let query = self.baseQuery(for: key)
@@ -111,7 +111,7 @@ final class KeychainStorage: StorageService {
         }
     }
 
-    func clear() async throws {
+    public func clear() async throws {
         return try await withCheckedThrowingContinuation { continuation in
             queue.async {
                 var query: [String: Any] = [
