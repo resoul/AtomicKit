@@ -9,29 +9,18 @@ public final class StorageManager {
     private let coreDataStorage: CoreDataStorage?
     private let migrationManager: StorageMigrationManager
 
-    public init(
-        userDefaults: UserDefaults = .standard,
-        keychainService: String = Bundle.main.bundleIdentifier ?? "DefaultService",
-        keychainAccessGroup: String? = nil,
-        fileSystemDirectory: FileManager.SearchPathDirectory = .documentDirectory,
-        coreDataModelName: String? = nil,
-        migrations: [Int: StorageMigration] = [:]
-    ) throws {
-        self.userDefaultsStorage = UserDefaultsStorage(userDefaults: userDefaults)
-        self.keychainStorage = KeychainStorage(service: keychainService,
-                                             accessGroup: keychainAccessGroup)
-        self.fileSystemStorage = try FileSystemStorage(directory: fileSystemDirectory)
+    public init() throws {
+        self.userDefaultsStorage = UserDefaultsStorage(userDefaults: UserDefaults.standard)
+        self.keychainStorage = KeychainStorage(service: Bundle.main.bundleIdentifier ?? "DefaultService",
+                                             accessGroup: "com.example.app")
+        self.fileSystemStorage = try FileSystemStorage(directory: FileManager.SearchPathDirectory.documentDirectory)
 
-        if let modelName = coreDataModelName {
-            self.coreDataStorage = try CoreDataStorage(modelName: modelName)
-        } else {
-            self.coreDataStorage = nil
-        }
+        self.coreDataStorage = try CoreDataStorage(modelName: "DataModel")
 
-        self.migrationManager = StorageMigrationManager(migrations: migrations)
+        self.migrationManager = StorageMigrationManager(migrations: [:])
     }
 
-    func storage(for type: StorageType) -> StorageService {
+    public func storage(for type: StorageType) -> StorageService {
         switch type {
         case .userDefaults:
             return userDefaultsStorage
@@ -50,12 +39,12 @@ public final class StorageManager {
     }
 
     // Convenience methods
-    func getUserDefaults() -> UserDefaultsStorage { userDefaultsStorage }
-    func getKeychain() -> KeychainStorage { keychainStorage }
-    func getFileSystem() -> FileSystemStorage { fileSystemStorage }
-    func getCoreData() -> CoreDataStorage? { coreDataStorage }
+    public func getUserDefaults() -> UserDefaultsStorage { userDefaultsStorage }
+    public func getKeychain() -> KeychainStorage { keychainStorage }
+    public func getFileSystem() -> FileSystemStorage { fileSystemStorage }
+    public func getCoreData() -> CoreDataStorage? { coreDataStorage }
 
-    func repository<T: NSManagedObject>(for entityType: T.Type) -> BaseRepository<T>? {
+    public func repository<T: NSManagedObject>(for entityType: T.Type) -> BaseRepository<T>? {
         guard let coreDataStorage = coreDataStorage else { return nil }
         return BaseRepository<T>(coreDataStorage: coreDataStorage)
     }
